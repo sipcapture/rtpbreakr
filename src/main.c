@@ -1330,7 +1330,7 @@ void rtp_stream_close(struct rtp_stream_entry *rtp_stream)
   // Execute command, if any
   if (strstr(find_stream_rtp_pt(rtp_stream->payload_type,1), "?") == NULL) {
 	  LOG(1,1,"Converting %s (%s) to WAV", find_stream_rtp_pt(rtp_stream->payload_type,0), find_stream_rtp_pt(rtp_stream->payload_type,1) );
-	  LOG(1,1,"SOX: %s", rtp_stream->command);
+	  LOG(1,1,"Command: %s", rtp_stream->command);
 	  system(rtp_stream->command);
   }
 
