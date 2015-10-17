@@ -1214,7 +1214,7 @@ rtp_stream_open_files(struct rtp_stream_entry *rtp_stream)
 		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_mulaw -f mulaw -ar 8000 -i %s/rtp.%d.%d-%s.raw -ar 8000 %s/rtp.%d.%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, ndxlog, rtp_stream->fid);
 		} else if (strstr(find_stream_rtp_pt(rtp_stream->payload_type,1), "729") != NULL) {
         	  // contains g729
-		        snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -f g729 -ar 8000 -i %s/rtp.%d.%d-%s.raw %s/rtp.%d.%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, ndxlog, rtp_stream->fid);
+		        snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec g729 -f g729 -i %s/rtp.%d.%d-%s.raw %s/rtp.%d.%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, ndxlog, rtp_stream->fid);
 	        }
         } else { snprintf(rtp_stream->command, sizeof(rtp_stream->command), "NULL"); }
 
