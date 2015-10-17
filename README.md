@@ -1,12 +1,12 @@
 # RTPBreakR
 
-This tool is an old dirty hack only suitable for lab testing (if anything) and should not be used. At all.
+This tool is an old dirty hack made out of some old code, with hardcoded commands and features barely suitable for lab testing (if anything) and should not be used. At all.
 
-## Requirements:
+### Requirements:
 
-* ```ffmpeg``` or ```sox``` installed on the target system
+* ```ffmpeg``` installed on the target system
 
-## Usage
+### Usage
 ```
 $ rtpbreakr (-r|-i) <source> [options]
 ```
