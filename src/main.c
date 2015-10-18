@@ -1212,18 +1212,18 @@ rtp_stream_open_files(struct rtp_stream_entry *rtp_stream)
     		  // contains g711a
 		  	//  snprintf(rtp_stream->command, sizeof(rtp_stream->command), "sox -r8000 -c1 -t al %s/rtp.%d.%d-%s.raw -t wav %s/audio-%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, rtp_stream->fid);
 		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_alaw -f alaw -ar 8000 -i %s.%s -ar 8000 %s.wav"
-										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png size 2000,200;set output '%s.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
+										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.wav.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
 										   namebody, codec, namebody, namebody, namebody);
 		} else if (strstr(codec, "711U") != NULL) {
         	  // contains g711u
 		        //  snprintf(rtp_stream->command, sizeof(rtp_stream->command), "sox -r8000 -c1 -t ul %s/rtp.%d.%d-%s.raw -t wav %s/audio-%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, rtp_stream->fid);
 		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_mulaw -f mulaw -ar 8000 -i %s.%s -ar 8000 %s.wav"
-										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png size 2000,200;set output '%s.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
+										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.wav.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
 										   namebody, codec, namebody, namebody, namebody);
 		} else if (strstr(codec, "729") != NULL) {
         	  // contains g729
 		        snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec g729 -f g729 -i %s.%s %s.wav"
-										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png size 2000,200;set output '%s.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
+										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.wav.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
 										   namebody, codec, namebody, namebody, namebody);
 	        }
         } else { snprintf(rtp_stream->command, sizeof(rtp_stream->command), "NULL"); }
