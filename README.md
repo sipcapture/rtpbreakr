@@ -4,7 +4,10 @@ This tool is an old dirty hack made out of some old code, with hardcoded command
 
 ### Requirements:
 
-* ```ffmpeg``` installed on the target system
+* Compile:
+  * ```libpcap-dev```, ```libnet-dev```
+* Runtime:
+  * ```ffmpeg``` and ```gnuplot``` installed on the target system
 
 ### Usage
 ```
