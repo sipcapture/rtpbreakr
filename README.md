@@ -14,9 +14,10 @@ RTPbreakR is just a hack made out of some old code _(RIP rtpbreak 2008)_ with ha
 $ rtpbreakr (-r|-i) <source> [options]
 ```
 
-### Example
+### Example with n2disk Timeline
 ```
-$ ./rtpbreakr -r /path/to/some/rtp.pcap -d /tmp
+$ ./npcapextract -t /tmp/n2disk/timeline -b "2015-10-18 12:10:00" -e "2015-10-18 12:20:00" -o /path/to/rtp.pcap -f "((udp) and ((port 7800) or (port 32402)) and ((host 192.168.1.254) or (host 192.168.1.200)))” 
+$ ./rtpbreakr -r /path/to/rtp.pcap -d /tmp
 ```
 
 ### Output:
