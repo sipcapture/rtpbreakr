@@ -1202,6 +1202,17 @@ rtp_stream_open_files(struct rtp_stream_entry *rtp_stream)
 
   if (o.dump_wav)
     {
+	// open rtp_stream->player output file
+  	snprintf(pathname, PATH_MAX, "%s/rtp.%d.html",o.outdir, ndxlog );
+	if (!o.player) {
+	  	if (!(o.player = fopen(pathname, "w")))
+	  	  FATAL("fopen(): %s", strerror(errno));
+		// HTML Player header
+	  	SAFE_FPRINTF(o.player,"<!DOCTYPE html><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><title>RTP HTML5 Player</title><link rel=\"stylesheet\" media=\"all\" type=\"text/css\" href=\"https://cdn.rawgit.com/mrt-prodz/Tiny-HTML5-Music-Player/master/css/tinyplayer-min.css\"><script src=\"https://cdn.rawgit.com/mrt-prodz/Tiny-HTML5-Music-Player/master/js/tinyplayer-min.js\"></script><script> TrackList = [ ");
+	}
+		// HTML Player entry
+		SAFE_FPRINTF(o.player," { url:'rtp.%d.%d.wav', title:'Stream %d', year:'%s:%d -> %s:%d'}, ",ndxlog,rtp_stream->fid, rtp_stream->fid, INET_NTOA(rtp_stream->addrs.srcaddr),rtp_stream->addrs.srcport, INET_NTOA(rtp_stream->addrs.dstaddr),rtp_stream->addrs.dstport );
+
 	// Set Command if codec is found
 	if (strstr(find_stream_rtp_pt(rtp_stream->payload_type,1), "?") == NULL) {
 		char namebody[64], codec[64];
@@ -1214,18 +1225,21 @@ rtp_stream_open_files(struct rtp_stream_entry *rtp_stream)
 		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_alaw -f alaw -ar 8000 -i %s.%s -ar 8000 %s.wav"
 										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.wav.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
 										   namebody, codec, namebody, namebody, namebody);
+
 		} else if (strstr(codec, "711U") != NULL) {
         	  // contains g711u
 		        //  snprintf(rtp_stream->command, sizeof(rtp_stream->command), "sox -r8000 -c1 -t ul %s/rtp.%d.%d-%s.raw -t wav %s/audio-%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, rtp_stream->fid);
 		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_mulaw -f mulaw -ar 8000 -i %s.%s -ar 8000 %s.wav"
 										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.wav.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
 										   namebody, codec, namebody, namebody, namebody);
+
 		} else if (strstr(codec, "729") != NULL) {
         	  // contains g729
 		        snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec g729 -f g729 -i %s.%s %s.wav"
 										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.wav.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
 										   namebody, codec, namebody, namebody, namebody);
 	        }
+
         } else { snprintf(rtp_stream->command, sizeof(rtp_stream->command), "NULL"); }
 
     }
@@ -1342,6 +1356,14 @@ void rtp_stream_close(struct rtp_stream_entry *rtp_stream)
 	  LOG(1,1,"Converting %s (%s) to WAV, PNG", find_stream_rtp_pt(rtp_stream->payload_type,0), find_stream_rtp_pt(rtp_stream->payload_type,1) );
 	  // LOG(1,1,"Debug Command: %s", rtp_stream->command);
 	  system(rtp_stream->command);
+  }
+
+  // HTML5 Player
+  if (o.dump_wav && rtp_streams.active == 0) {
+	// HTML Player footer
+  	SAFE_FPRINTF(o.player," ];tinyplayer(TrackList, true);</script></head><body><div class=\"wrapper\"><div id=\"all_tracks\" style=\"width:50%%;\"></div></div></div></body></html> " );
+  	// after this fclose, no more fprint to player!!
+  	SAFE_FCLOSE(o.player);
   }
 
   if (rtp_stream->rev && rtp_stream->rev->rev)

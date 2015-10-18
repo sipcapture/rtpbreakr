@@ -63,6 +63,7 @@ typedef struct
     int dump_raw;
     int dump_pcap;
     int dump_wav;
+    FILE *player;
   }
 OPT;
 
