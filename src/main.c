@@ -1204,17 +1204,27 @@ rtp_stream_open_files(struct rtp_stream_entry *rtp_stream)
     {
 	// Set Command if codec is found
 	if (strstr(find_stream_rtp_pt(rtp_stream->payload_type,1), "?") == NULL) {
-		if (strstr(find_stream_rtp_pt(rtp_stream->payload_type,1), "711A") != NULL) {
+		char namebody[64], codec[64];
+		snprintf(namebody, sizeof(namebody),"%s/rtp.%d.%d",o.outdir,ndxlog, rtp_stream->fid );
+		snprintf(codec, sizeof(codec),"%s",find_stream_rtp_pt(rtp_stream->payload_type,1) );
+
+		if (strstr(codec, "711A") != NULL) {
     		  // contains g711a
 		  	//  snprintf(rtp_stream->command, sizeof(rtp_stream->command), "sox -r8000 -c1 -t al %s/rtp.%d.%d-%s.raw -t wav %s/audio-%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, rtp_stream->fid);
-		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_alaw -f alaw -ar 8000 -i %s/rtp.%d.%d-%s.raw -ar 8000 %s/rtp.%d.%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, ndxlog, rtp_stream->fid);
-		} else if (strstr(find_stream_rtp_pt(rtp_stream->payload_type,1), "711U") != NULL) {
+		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_alaw -f alaw -ar 8000 -i %s.%s -ar 8000 %s.wav"
+										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png size 2000,200;set output '%s.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
+										   namebody, codec, namebody, namebody, namebody);
+		} else if (strstr(codec, "711U") != NULL) {
         	  // contains g711u
 		        //  snprintf(rtp_stream->command, sizeof(rtp_stream->command), "sox -r8000 -c1 -t ul %s/rtp.%d.%d-%s.raw -t wav %s/audio-%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, rtp_stream->fid);
-		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_mulaw -f mulaw -ar 8000 -i %s/rtp.%d.%d-%s.raw -ar 8000 %s/rtp.%d.%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, ndxlog, rtp_stream->fid);
-		} else if (strstr(find_stream_rtp_pt(rtp_stream->payload_type,1), "729") != NULL) {
+		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_mulaw -f mulaw -ar 8000 -i %s.%s -ar 8000 %s.wav"
+										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png size 2000,200;set output '%s.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
+										   namebody, codec, namebody, namebody, namebody);
+		} else if (strstr(codec, "729") != NULL) {
         	  // contains g729
-		        snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec g729 -f g729 -i %s/rtp.%d.%d-%s.raw %s/rtp.%d.%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, ndxlog, rtp_stream->fid);
+		        snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec g729 -f g729 -i %s.%s %s.wav"
+										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png size 2000,200;set output '%s.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
+										   namebody, codec, namebody, namebody, namebody);
 	        }
         } else { snprintf(rtp_stream->command, sizeof(rtp_stream->command), "NULL"); }
 
@@ -1222,7 +1232,7 @@ rtp_stream_open_files(struct rtp_stream_entry *rtp_stream)
 
   if (o.dump_raw)
     {
-      snprintf(pathname, PATH_MAX, "%s/rtp.%d.%d-%s.raw",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1) );
+      snprintf(pathname, PATH_MAX, "%s/rtp.%d.%d.%s",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1) );
       if (!(rtp_stream->raw = fopen(pathname, "w"))) {
         FATAL("fopen(): %s", strerror(errno));
       }
@@ -1328,9 +1338,9 @@ void rtp_stream_close(struct rtp_stream_entry *rtp_stream)
   SAFE_FCLOSE(rtp_stream->f);
 
   // Execute command, if any
-  if (strstr(find_stream_rtp_pt(rtp_stream->payload_type,1), "?") == NULL) {
-	  LOG(1,1,"Converting %s (%s) to WAV", find_stream_rtp_pt(rtp_stream->payload_type,0), find_stream_rtp_pt(rtp_stream->payload_type,1) );
-	  LOG(1,1,"Command: %s", rtp_stream->command);
+  if (o.dump_wav && strstr(find_stream_rtp_pt(rtp_stream->payload_type,1), "?") == NULL) {
+	  LOG(1,1,"Converting %s (%s) to WAV, PNG", find_stream_rtp_pt(rtp_stream->payload_type,0), find_stream_rtp_pt(rtp_stream->payload_type,1) );
+	  // LOG(1,1,"Debug Command: %s", rtp_stream->command);
 	  system(rtp_stream->command);
   }
 
@@ -1354,8 +1364,9 @@ void rtp_streams_close()
 void help()
 {
   printf("Copyright (c) 2007-2008 Dallachiesa Michele <micheleDOTdallachiesaATposteDOTit>\n");
-  printf("rtpbreak v%s is free software, covered by the GNU General Public License.\n\n", VERSION);
-  printf("USAGE: rtpbreak (-r|-i) <source> [options]\n");
+  printf("Copyright (c) 2015 QXIP BV <info@qxip.net>\n");
+  printf("rtpbreakr v%s is free software, covered by the GNU General Public License.\n\n", VERSION);
+  printf("USAGE: rtpbreakr (-r|-i) <source> [options]\n");
 
   printf("\n INPUT\n\n");
   printf("  -r <str>      Read packets from pcap file <str>\n");
@@ -1365,6 +1376,7 @@ void help()
   printf("  -d <str>      Set output directory to <str> (def:%s)\n",DEFAULT_OUTDIR);
   printf("  -w            Disable RTP raw dumps\n");
   printf("  -W            Disable RTP pcap dumps\n");
+  printf("  -W            Disable RTP external dumps\n");
   printf("  -g            Fill gaps in RTP raw dumps (caused by lost packets)\n");
   printf("  -n            Dump noise packets\n");
   printf("  -f            Disable stdout logging\n");
