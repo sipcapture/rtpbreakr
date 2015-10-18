@@ -1,6 +1,5 @@
 # ![RTPbreakR](http://i.imgur.com/CztZLDE.png)
 
-RTPbreakR is just a hack made out of some old code _(RIP rtpbreak 2008)_ with hardcoded system commands, features barely suitable for lab testing (if anything) and should not be used. At all. Ever. This being said.
 
 ### Requirements:
 
