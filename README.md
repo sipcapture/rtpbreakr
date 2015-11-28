@@ -23,12 +23,12 @@ $ ./rtpbreakr -r /path/to/rtp.pcap -d /tmp
 ```
 /tmp/rtp.0.1.g711A
 /tmp/rtp.0.1.txt
-/tmp/rtp.0.1.wav
-/tmp/rtp.0.1.wav.png
+/tmp/rtp.0.1.mp3
+/tmp/rtp.0.1.mp3.png
 /tmp/rtp.0.2.g711A
 /tmp/rtp.0.2.txt
-/tmp/rtp.0.2.wav
-/tmp/rtp.0.2.wav.png
+/tmp/rtp.0.2.mp3
+/tmp/rtp.0.2.mp3.png
 /tmp/rtp.0.html
 /tmp/rtp.0.txt
 
