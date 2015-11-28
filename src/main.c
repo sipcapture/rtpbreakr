@@ -1214,22 +1214,27 @@ rtp_stream_open_files(struct rtp_stream_entry *rtp_stream)
 		if (strstr(codec, "711A") != NULL) {
     		  // contains g711a
 		  	//  snprintf(rtp_stream->command, sizeof(rtp_stream->command), "sox -r8000 -c1 -t al %s/rtp.%d.%d-%s.raw -t wav %s/audio-%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, rtp_stream->fid);
-		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_alaw -f alaw -ar 8000 -i %s.%s -ar 8000 %s.wav"
-										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.wav.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
+		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_alaw -f alaw -ar 8000 -i %s.%s -ar 8000 %s.mp3"
+										   ";ffmpeg -nostats -loglevel 0 -i %s.mp3 -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.mp3.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
 										   namebody, codec, namebody, namebody, namebody);
 
 		} else if (strstr(codec, "711U") != NULL) {
         	  // contains g711u
 		        //  snprintf(rtp_stream->command, sizeof(rtp_stream->command), "sox -r8000 -c1 -t ul %s/rtp.%d.%d-%s.raw -t wav %s/audio-%d.wav",o.outdir, ndxlog, rtp_stream->fid, find_stream_rtp_pt(rtp_stream->payload_type,1), o.outdir, rtp_stream->fid);
-		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_mulaw -f mulaw -ar 8000 -i %s.%s -ar 8000 %s.wav"
-										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.wav.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
+		  	snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec pcm_mulaw -f mulaw -ar 8000 -i %s.%s -ar 8000 %s.mp3"
+										   ";ffmpeg -nostats -loglevel 0 -i %s.mp3 -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.mp3.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
 										   namebody, codec, namebody, namebody, namebody);
 
 		} else if (strstr(codec, "729") != NULL) {
         	  // contains g729
-		        snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec g729 -f g729 -i %s.%s %s.wav"
-										   ";ffmpeg -nostats -loglevel 0 -i %s.wav -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.wav.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
+		        snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec g729 -f g729 -i %s.%s %s.mp3"
+										   ";ffmpeg -nostats -loglevel 0 -i %s.mp3 -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.mp3.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
 										   namebody, codec, namebody, namebody, namebody);
+		} else {
+        	  // contains some other codec, attempt conversion
+		        snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg -nostats -loglevel 0 -acodec %s -f %s -i %s.%s %s.mp3"
+										   ";ffmpeg -nostats -loglevel 0 -i %s.mp3 -ac 1 -filter:a aresample=8000 -map 0:a -c:a pcm_s16le -f data - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.mp3.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
+										   codec, codec, namebody, codec, namebody, namebody, namebody);
 	        }
 
 		if (!o.player) {
@@ -1239,7 +1244,7 @@ rtp_stream_open_files(struct rtp_stream_entry *rtp_stream)
 		  	SAFE_FPRINTF(o.player,"<!DOCTYPE html><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><title>RTP HTML5 Player</title><link rel=\"stylesheet\" media=\"all\" type=\"text/css\" href=\"https://cdn.rawgit.com/mrt-prodz/Tiny-HTML5-Music-Player/master/css/tinyplayer-min.css\"><script src=\"https://cdn.rawgit.com/mrt-prodz/Tiny-HTML5-Music-Player/master/js/tinyplayer-min.js\"></script><script> TrackList = [ ");
 		}
 			// HTML Player entry
-			SAFE_FPRINTF(o.player," { url:'rtp.%d.%d.wav', title:'Stream %d', year:'%s:%d -> %s:%d (%s)'}, ",ndxlog,rtp_stream->fid, rtp_stream->fid, INET_NTOA(rtp_stream->addrs.srcaddr),rtp_stream->addrs.srcport, INET_NTOA(rtp_stream->addrs.dstaddr),rtp_stream->addrs.dstport,find_stream_rtp_pt(rtp_stream->payload_type,1) );
+			SAFE_FPRINTF(o.player," { url:'rtp.%d.%d.mp3', title:'Stream %d', year:'%s:%d -> %s:%d (%s)'}, ",ndxlog,rtp_stream->fid, rtp_stream->fid, INET_NTOA(rtp_stream->addrs.srcaddr),rtp_stream->addrs.srcport, INET_NTOA(rtp_stream->addrs.dstaddr),rtp_stream->addrs.dstport,find_stream_rtp_pt(rtp_stream->payload_type,1) );
 
 
         } else { snprintf(rtp_stream->command, sizeof(rtp_stream->command), "NULL"); }
