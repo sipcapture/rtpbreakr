@@ -1,8 +1,8 @@
 /*
- * main.c by xenion -- 2008-05-05 -- v.262c5cbb0ef3c107aae3316bca65296f
+ * main.c
  *
  * Copyright (c) 2007-2008 Dallachiesa Michele <micheleDOTdallachiesaATposteDOTit>
- * Copyright (c) 2015 QXIP BV (info@qxip.net))
+ * Copyright (c) 2015 QXIP BV <info@qxip.net>
  *
  *
  * This program is free software; you can redistribute it and/or
