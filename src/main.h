@@ -133,7 +133,7 @@ struct rtp_stream_entry
     int payload_length_fixed;
     LIST_ENTRY(rtp_stream_entry) l; // list link
     struct rtp_stream_entry *rev;
-    char command[512];
+    char command[1024];
   };
 
 
