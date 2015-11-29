@@ -1,0 +1,16 @@
+language: c
+
+compiler:
+  - gcc
+
+install: 
+  - sudo apt-get update || true
+  - sudo apt-get install build-essential
+  - sudo apt-get install libpcap-dev libnet-dev ffmpeg gnuplot
+
+script:
+  - make
+  - ./rtpbreakr
+
+notifications:
+  slack: qxip:WuEGMSIAa8KEX6iL2zN2bZbv
