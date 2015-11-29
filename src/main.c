@@ -1230,7 +1230,7 @@ rtp_stream_open_files(struct rtp_stream_entry *rtp_stream)
 		        snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg  -loglevel 0 -acodec g729 -f g729 -i %s.%s %s.mp3"
 										   ";ffmpeg  -loglevel 0 -i %s.mp3 -ac 1 -map 0:a -acodec pcm_s16le -f f32le - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.mp3.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
 										   namebody, codec, namebody, namebody, namebody);
-		} else if (strstr(codec, "722") != NULL {
+		} else if (strstr(codec, "722") != NULL) {
         	  // contains some other codec, attempt conversion
 		        snprintf(rtp_stream->command, sizeof(rtp_stream->command), "ffmpeg  -loglevel 0 -acodec %s -ar 16000 -f %s -i %s.%s %s.mp3"
 										   ";ffmpeg  -loglevel 0 -i %s.mp3 -ac 1 -map 0:a -acodec pcm_s16le -f f32le - | gnuplot -p -e \"set terminal png transparent size 980,60 enhanced;set output '%s.mp3.png';unset key;unset tics;unset border;set lmargin 0;set rmargin 0;set tmargin 0.5;set bmargin 0.5; plot '<cat' binary filetype=bin format='%%int16' endian=little array=1:0 with lines;\" ",
