@@ -6,7 +6,7 @@
 * Compile:
   * ```libpcap-dev```, ```libnet-dev```
 * Runtime:
-  * ```ffmpeg 0.x``` and ```gnuplot``` installed on the target system
+  * ```ffmpeg 0.x``` and ```gnuplot 4.4+``` installed on the target system
 
 ### Usage
 ```
