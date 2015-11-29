@@ -6,7 +6,7 @@
 * Compile:
   * ```libpcap-dev```, ```libnet-dev```
 * Runtime:
-  * ```ffmpeg 2.x``` and ```gnuplot``` installed on the target system
+  * ```ffmpeg 2.x``` and ```gnuplot 4.4``` installed on the target system
    
  NOTE: For older ffmpeg versions (0.x) use [this version](https://github.com/sipcapture/rtpbreakr/tree/oldffmpeg)
 
