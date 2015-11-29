@@ -1,5 +1,6 @@
 # ![RTPbreakR](http://i.imgur.com/CztZLDE.png)
 
+[![Build Status](https://travis-ci.org/sipcapture/rtpbreakr.svg?branch=master)](https://travis-ci.org/sipcapture/rtpbreakr)
 
 ### Requirements:
 
