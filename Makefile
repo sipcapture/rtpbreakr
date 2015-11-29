@@ -1,6 +1,6 @@
 # rtpbreakr Makefile.
 
-INSTALL_DIR       = "$(HOME)/bin/" 
+INSTALL_DIR       = "/usr/bin/" 
 
 #####################################################################
 
@@ -16,7 +16,7 @@ build:
 
 
 install:
-	cp src/rtpbreak $(INSTALL_DIR)
+	cp ./rtpbreakr $(INSTALL_DIR)
 	@echo ""
 	@echo "rtpbreakr has been installed!"
 	@echo ""
