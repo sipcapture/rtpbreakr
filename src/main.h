@@ -59,7 +59,7 @@ typedef struct
     int daemonize;
     int promisc;
     int syslog;
-    int stdout;
+    int stdoutx;
     int dump_raw;
     int dump_pcap;
     int dump_wav;

@@ -35,7 +35,9 @@
 #ifndef _COMPAT_QUEUE_H_
 #define _COMPAT_QUEUE_H_
 
+/*
 #include <sys/cdefs.h>
+*/
 
 /*
  * This file defines four types of data structures: singly-linked lists,

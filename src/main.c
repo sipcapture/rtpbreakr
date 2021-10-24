@@ -28,13 +28,12 @@
 #include <sys/stat.h>
 #include <pwd.h>
 #include <grp.h>
-// #include <linux/udp.h>
+#include <netinet/udp.h>
 #include "queue.h"
 #include "rtp.h"
 #include "common.h"
 #include "net.h"
 #include "main.h"
-
 
 /* globals */
 
@@ -47,7 +46,6 @@ int ndxlog = -1;
 int running = 0;
 char errbuf[PCAP_ERRBUF_SIZE];
 OPT o;
-
 
 /* protos */
 
@@ -346,10 +344,10 @@ init_opt(int argc, char **argv)
   o.daemonize = 0;
   o.promisc = 0;
   o.syslog = 0;
-  o.stdout = 1;
   o.dump_raw = 1;
   o.dump_pcap = 1;
   o.dump_wav = 1;
+  o.stdoutx = 1;
 
   if (argc ==1)
     help();
@@ -468,7 +466,7 @@ init_opt(int argc, char **argv)
         break;
 
       case 'f':
-        o.stdout = 0;
+        o.stdoutx = 0;
         break;
 
       case 'h':
@@ -490,9 +488,9 @@ init_opt(int argc, char **argv)
       }
 
   if (o.daemonize)
-    o.stdout = 0;
+    o.stdoutx = 0;
 
-  if (o.stdout)
+  if (o.stdoutx)
     enable_stdout();
 
   if (o.verbose)
@@ -539,7 +537,7 @@ init_opt(int argc, char **argv)
     daemonize();
 
 
-  LOG(1,1," + rtpbreak v%s running here!",VERSION);
+  LOG(1,1," + rtpbreak running here!");
   LOG(1,1," + pid: %d, date/time: %s",getpid(),strtime(time(NULL)));
 
 
@@ -583,7 +581,7 @@ init_opt(int argc, char **argv)
     LOG(0,1,"disabled");
 
   LOG(1,1,"     Logfile: '%s/rtp.%d.txt'", o.outdir, ndxlog);
-  LOG(1,1,"     Logging to stdout: %s",o.stdout ? "enabled" : "disabled");
+  LOG(1,1,"     Logging to stdout: %s",o.stdoutx ? "enabled" : "disabled");
   LOG(1,1,"     Logging to syslog: %s",o.syslog ? "enabled" : "disabled");
   LOG(1,1,"     Be verbose: %s",o.verbose ? "enabled" : "disabled");
   LOG(1,1,"   + SELECT");
@@ -1394,7 +1392,7 @@ void help()
 {
   printf("Copyright (c) 2007-2008 Dallachiesa Michele <micheleDOTdallachiesaATposteDOTit>\n");
   printf("Copyright (c) 2015 QXIP BV <info@qxip.net>\n");
-  printf("rtpbreakr v%s is free software, covered by the GNU General Public License.\n\n", VERSION);
+  printf("rtpbreakr is free software, covered by the GNU General Public License.\n\n");
   printf("USAGE: rtpbreakr (-r|-i) <source> [options]\n");
 
   printf("\n INPUT\n\n");
